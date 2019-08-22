@@ -1,0 +1,38 @@
+<html>
+<head>
+<style>
+article {
+    background: whitesmoke;
+    border: 1px solid silver;
+    padding: 15px;
+    font-family: sans-serif;
+    margin: 30px 15px 30px 15px;
+}
+header {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+header span {
+    display: block;
+    color: lightslategray;
+    font-style: italic;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+</style>
+</head>
+
+<body>
+
+@each(post in posts)
+    <article>
+        <header>
+            {{ post.title }}
+            <span> {{ post.created_at }} by {{post.author.name}} </span> 
+        </header>
+        {{ post.content }}
+    </article>
+@endeach
+
+</body>
+</html>

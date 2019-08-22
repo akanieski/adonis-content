@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "database": ".\\Session_01\\blog-app-sqlite\\database\\adonis.sqlite",
+            "dialect": "SQLite",
+            "name": "Local"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
