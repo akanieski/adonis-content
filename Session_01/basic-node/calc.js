@@ -13,11 +13,17 @@ class Calculator {
         return v1 / v2
     }
 
-    crunch(v1) {
-        return new Promise((resolve, reject) => {
+    async crunch() {
+        var result = await this.callDb(1)
+
+        return result
+    }
+
+
+    callDb(v1) {
+        return new Promise((done, throwError) => {
             setTimeout(() => {
-                console.log('Crunched')
-                resolve()
+                throwError('BOOM')
             }, 2000)
         })
     }

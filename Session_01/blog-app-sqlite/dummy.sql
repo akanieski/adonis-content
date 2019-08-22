@@ -1,4 +1,4 @@
-/*INSERT INTO
+INSERT INTO
   "users" (
     created_at,
     email,
@@ -14,7 +14,7 @@ VALUES
     date(),
     'tester'
   );
-*/
+
   INSERT INTO
     "posts" (
       author_id,
