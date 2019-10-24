@@ -1,31 +1,9 @@
-# Adonis fullstack application
+# File upload sample
 
-This is the fullstack boilerplate for AdonisJs, it comes pre-configured with.
+So here I'm using web sockets to upload a file.. and then alerting other users that the file has been made available. Then allows user to click the link and download the newly available file.
 
-1. Bodyparser
-2. Session
-3. Authentication
-4. Web security middleware
-5. CORS
-6. Edge template engine
-7. Lucid ORM
-8. Migrations and seeds
+Source code can mostly be found in `resources/welcome.edge` and `app/Controllers/Ws/FileUploadController.js`.
 
-## Setup
+It should look like this!
 
-Use the adonis command to install the blueprint
-
-```bash
-adonis new yardstick
-```
-
-or manually clone the repo and then run `npm install`.
-
-
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
-```
+![upload screen](https://i.imgur.com/GCyCBB0.png)
