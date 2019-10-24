@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello Adonis</title>
+  {{ style('style') }}
+
+  <style>
+    #uploader {
+      border: 3px dotted white;
+      width: 100%;
+      height: 125px;
+      text-align: center;
+      padding-top: 100px;
+      color: white;
+      cursor: pointer;
+    }
+    .file-picker {
+      display: none;
+    }
+    #logs {
+      border: 1px solid #6c0352;
+      width: 100%;
+      height: 125px;
+      text-align: left;
+      color: white;
+      cursor: pointer;
+      margin-top: 30px;
+      background: #14032d;
+      padding-left: 10px;
+      padding-top: 10px;
+      font-size: small;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+    #logs .line {
+      display: block;
+    }
+  </style>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+  <section>
+    <div class="logo"></div>
+    <div class="title"></div>
+    <div class="subtitle">
+      <p>AdonisJs simplicity will make you feel confident about your code</p>
+      <p>
+        Don't know where to start? Read the <a href="https://adonisjs.com/docs">documentation</a>.
+      </p>
+
+      <div id="uploader">
+        <span class="content">Click Here to Upload</span>
+      </div>
+      <input class="file-picker" type="file"/>
+      <div id="logs">
+      </div>
+    </div>
+  </section>
+
+
+  <script>
+    $(document).ready(function() {
+      var ws = adonis.Ws().connect()
+      var filePicker = $('.file-picker');
+      var logs = $('#logs');
+
+      // Setup the File Uploader UI
+      $('#uploader').click(function(){
+        ev.preventDefault();
+        filePicker.click();
+      });
+      var upload = function(file){
+        var reader = new FileReader();
+        reader.onload = function(){
+          var data = this.result;
+          ws.getSubscription('file-uploads').emit('message', {
+            data: data,
+            lastModified: file.lastModified,
+            lastModifiedDate: file.lastModifiedDate,
+            name: file.name,
+            size: file.size,
+            type: file.type
+          });
+        };
+        reader.readAsDataURL(file);
+      };
+      
+      $('.file-picker').on('change', function() {
+        upload(this.files[0]);
+      });
+      $('html').on('drop', function(ev){
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        if (ev.originalEvent.dataTransfer.items) {
+          // Use DataTransferItemList interface to access the file(s)
+          for (var i = 0; i < ev.originalEvent.dataTransfer.items.length; i++) {
+            // If dropped items aren't files, reject them
+            if (ev.originalEvent.dataTransfer.items[i].kind === 'file') {
+              var file = ev.originalEvent.dataTransfer.items[i].getAsFile();
+              upload(file)
+            }
+          }
+        } else {
+          // Use DataTransfer interface to access the file(s)
+          for (var i = 0; i < ev.originalEvent.dataTransfer.files.length; i++) {
+            upload(ev.originalEvent.dataTransfer.files[i])
+          }
+        }
+      });
+      $('html').on('dragover', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      });
+
+      // Setup the FileUpload Listener
+      
+      ws.on('open', () => {
+        console.log('Connected to web socket server..');
+        var fileUploadChannel = ws.subscribe('file-uploads');
+        fileUploadChannel.on('error', console.error);
+        fileUploadChannel.on('NewFileUploaded', function(message){
+          logs.prepend("<span class='line'>We received <a href='/uploads/"+message.name+"'>" + message.name + '</a>!</span>')
+        })
+      })
+
+    });
+  </script>
+  
+  {{ script('https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js') }}
+  {{ script('https://unpkg.com/@adonisjs/websocket-client@1.0.9/dist/Ws.browser.js') }}
+</body>
+</html>
